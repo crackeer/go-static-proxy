@@ -1,4 +1,4 @@
-module static-proxy
+module go-static-proxy
 
 go 1.25.9
 
