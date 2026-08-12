@@ -21,7 +21,7 @@
 | 变量 | 必填 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `TARGET` | 是 | - | 上游静态资源地址，例如 `https://example.com/assets` |
-| `LOCAL_DIR` | 是 | - | 本地资源存储目录，例如 `./data` |
+| `LOCAL_DIR` | 否 | `/tmp/go-static-dir` | 本地资源存储目录 |
 | `PORT` | 否 | `8080` | HTTP 服务监听端口 |
 
 ## 安装与运行
@@ -30,7 +30,6 @@
 go mod download
 
 TARGET=https://example.com/assets \
-LOCAL_DIR=./data \
 PORT=8080 \
 go run .
 ```
@@ -39,8 +38,10 @@ go run .
 
 ```bash
 go build -o static-proxy .
-TARGET=https://example.com/assets LOCAL_DIR=./data ./static-proxy
+TARGET=https://example.com/assets ./static-proxy
 ```
+
+如需自定义缓存目录，可额外设置 `LOCAL_DIR`，例如 `LOCAL_DIR=./data`。
 
 启动后访问：
 
@@ -48,7 +49,7 @@ TARGET=https://example.com/assets LOCAL_DIR=./data ./static-proxy
 curl http://localhost:8080/images/example.jpg
 ```
 
-若 `./data/images/example.jpg` 已存在，服务会直接返回该文件；否则会从 `https://example.com/assets/images/example.jpg` 下载并保存。上游未返回 HTTP 200 时，客户端会收到 404。
+若 `/tmp/go-static-dir/images/example.jpg` 已存在，服务会直接返回该文件；否则会从 `https://example.com/assets/images/example.jpg` 下载并保存。上游未返回 HTTP 200 时，客户端会收到 404。
 
 ## 图片处理
 

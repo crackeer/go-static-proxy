@@ -1,5 +1,5 @@
 // 静态资源存储服务：优先返回本地文件，缺失时从上游 TARGET 下载，支持 imageMogr2 图片处理。
-// 环境变量：PORT（监听端口，默认 8080）、TARGET（上游地址，必填）、LOCAL_DIR（本地存储目录，必填）
+// 环境变量：PORT（监听端口，默认 8080）、TARGET（上游地址，必填）、LOCAL_DIR（本地存储目录，默认 /tmp/go-static-dir）
 package main
 
 import (
@@ -28,9 +28,12 @@ func main() {
 		port = "8080"
 	}
 	target := os.Getenv("TARGET")
+	if target == "" {
+		log.Fatal("TARGET 环境变量必填")
+	}
 	localDir := os.Getenv("LOCAL_DIR")
-	if target == "" || localDir == "" {
-		log.Fatal("TARGET 和 LOCAL_DIR 环境变量必填")
+	if localDir == "" {
+		localDir = "/tmp/go-static-dir"
 	}
 	if _, err := url.Parse(target); err != nil {
 		log.Fatalf("TARGET 不是有效 URL: %v", err)
